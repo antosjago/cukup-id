@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>cukup.id - Laporan Transaksi</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',Tahoma,sans-serif;background:#f9fff9;color:#1a3a1a;display:flex;flex-direction:column;min-height:100vh}
+  header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#e1f5e1;box-shadow:0 2px 6px rgba(0,0,0,0.1);position:sticky;top:0;z-index:100}
+  .logo{font-weight:700;font-size:1.5rem;color:#248232;cursor:pointer}
+  .page{display:flex;flex-direction:column;flex:1;padding:20px 0 80px 0}
+  .card{background:#fff;border-radius:14px;box-shadow:0 3px 7px rgba(0,0,0,0.1);margin:0 20px;padding:20px;width:100%;max-width:500px;align-self:center}
+  .summary-title{font-weight:600;margin-bottom:12px;color:#2d582d;display:flex;justify-content:space-between;align-items:center}
+  .btn-back{background:none;border:none;color:#248232;font-weight:700;cursor:pointer;font-size:0.9rem;padding:0;margin-bottom:10px;display:inline-flex;align-items:center;gap:4px}
+  .trx-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #eef7ee}
+  .trx-item:last-child{border-bottom:none}
+  .trx-cat{font-size:0.75rem;color:#668866;background:#eef7ee;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:2px}
+  .empty-state{text-align:center;color:#668866;padding:30px 0;font-size:0.9rem}
+  nav{position:fixed;bottom:0;left:0;right:0;background:#fff;box-shadow:0 -2px 8px rgba(0,0,0,0.08);display:flex;justify-content:space-around;padding:10px 0;border-top-left-radius:14px;border-top-right-radius:14px;z-index:100}
+  nav button{background:none;border:none;font-weight:600;font-size:0.75rem;color:#668866;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+  nav button.active{color:#2f7d2f}
+  nav button svg{width:20px;height:20px;fill:currentColor}
+</style>
+</head>
+<body>
+
+<header>
+  <!-- Logo mengarah ke home.html -->
+  <div class="logo" onclick="window.location.href='home.html'">cukup.id</div>
+</header>
+
+<main class="page">
+  <div class="card">
+    <!-- Tombol Kembali mengarah ke home.html -->
+    <button class="btn-back" onclick="window.location.href='home.html'">← Kembali ke Beranda</button>
+    <div class="summary-title">Riwayat Transaksi</div>
+    <div id="list-transaksi"></div>
+  </div>
+</main>
+
+<!-- NAVIGASI BAWAH (Beranda mengarah ke home.html) -->
+<nav>
+  <button onclick="window.location.href='home.html'">
+    <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9v9a3 3 0 0 1-3 3h-3v-6H9v6H6a3 3 0 0 1-3-3v-9z"/></svg>
+    Beranda
+  </button>
+  <button onclick="window.location.href='catat.html'">
+    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    Catat
+  </button>
+  <button class="active" onclick="window.location.href='laporan.html'">
+    <svg viewBox="0 0 24 24"><path d="M4 21h16v-2H4v2zm5-6h2v-7H9v7zm4 0h2v-4h-2v4z"/></svg>
+    Laporan
+  </button>
+  <button onclick="window.location.href='budget.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 7l3 6H9l3-6zm0 10a9 9 0 1 1 0-18 9 9 0 0 1 0 18z"/></svg>
+    Budget
+  </button>
+  <button onclick="window.location.href='target.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+    Target
+  </button>
+</nav>
+
+<script>
+  let state = JSON.parse(localStorage.getItem('cukup_data')) || { transaksi: [] };
+  const formatRp = (angka) => 'Rp ' + angka.toLocaleString('id-ID');
+
+  function renderLaporan() {
+    const container = document.getElementById('list-transaksi');
+    if (!state.transaksi || state.transaksi.length === 0) {
+      container.innerHTML = `<div class="empty-state">Belum ada riwayat transaksi. Yuk mulai catat pengeluaranmu!</div>`;
+      return;
+    }
+    container.innerHTML = state.transaksi.map(t => {
+      const isMasuk = t.tipe === 'masuk';
+      return `
+        <div class="trx-item">
+          <div>
+            <div style="font-weight:600">${t.nama}</div>
+            <span class="trx-cat">${t.kategori}</span>
+          </div>
+          <div style="font-weight:700;color:${isMasuk ? '#2e7d32' : '#e53935'}">
+            ${isMasuk ? '+' : '-'} ${formatRp(t.nominal)}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  renderLaporan();
+</script>
+</body>
+</html>

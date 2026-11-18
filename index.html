@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>cukup.id - Memuat...</title>
+<style>
+  :root {
+    --primary: #1b6325;
+    --bg-color: #f4fbf4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .splash-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeInScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .logo-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(27, 99, 37, 0.2);
+    margin-bottom: 20px;
+    animation: bounceLogo 2s infinite ease-in-out;
+  }
+
+  .app-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+    opacity: 0;
+    animation: fadeInText 0.8s ease-in-out 0.4s forwards;
+  }
+
+  .app-tagline {
+    font-size: 0.85rem;
+    color: #527356;
+    margin-top: 6px;
+    opacity: 0;
+    animation: fadeInText 0.8s ease-in-out 0.6s forwards;
+  }
+
+  @keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes fadeInText {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounceLogo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="splash-container">
+    <!-- Menggunakan logo kamu: logo-cukup.jpg -->
+    <img src="logo-cukup.jpg" alt="Logo Cukup.id" class="logo-img" />
+    <div class="app-name">cukup.id</div>
+    <div class="app-tagline">Atur keuangan biar cukup sampai akhir bulan</div>
+  </div>
+
+<script>
+  // Otomatis pindah ke halaman utama (home.html) setelah 2.5 detik
+  setTimeout(() => {
+    window.location.href = 'home.html';
+  }, 2500);
+</script>
+
+</body>
+</html>

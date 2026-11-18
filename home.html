@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>cukup.id - Aplikasi Keuangan</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',Tahoma,sans-serif;background:#f9fff9;color:#1a3a1a;display:flex;flex-direction:column;min-height:100vh}
+  header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#e1f5e1;box-shadow:0 2px 6px rgba(0,0,0,0.1);position:sticky;top:0;z-index:100}
+  .logo{font-weight:700;font-size:1.5rem;color:#248232;cursor:pointer}
+  .notification{position:relative;font-size:24px;color:#248232;cursor:pointer}
+  .page{display:flex;flex-direction:column;flex:1;padding-bottom:80px}
+  .greeting{padding:20px 20px 0}
+  .greeting h2{margin:0 0 4px;font-weight:600}
+  .greeting p{margin:0;color:#4a7c4a;font-size:0.9rem}
+  .card{background:#fff;border-radius:14px;box-shadow:0 3px 7px rgba(0,0,0,0.1);margin:16px 20px;padding:20px}
+  .saldo-card{position:relative;background:linear-gradient(135deg,#38a838,#60c960);color:#fff}
+  .saldo-card .title{font-size:0.9rem;opacity:0.85;margin-bottom:6px}
+  .saldo-card .amount{font-size:1.8rem;font-weight:700;display:flex;align-items:center;gap:12px}
+  .saldo-card .calendar-badge{position:absolute;top:16px;right:16px;background:#2a732a;padding:4px 10px;font-size:0.75rem;border-radius:12px}
+  .btn-topup{margin-top:12px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.6);color:#fff;padding:6px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer}
+  .btn-topup:hover{background:rgba(255,255,255,0.3)}
+  .quick-actions{margin:0 20px;display:flex;justify-content:space-between;gap:8px}
+  .quick-action-btn{background:#fff;border:none;border-radius:12px;flex:1;box-shadow:0 2px 5px rgba(0,0,0,0.08);padding:12px 4px;display:flex;flex-direction:column;align-items:center;color:#368b36;font-weight:600;font-size:0.75rem;cursor:pointer}
+  .quick-action-btn:hover{background:#e6f6e6}
+  .quick-action-btn svg{width:22px;height:22px;margin-bottom:4px;fill:#368b36}
+  .summary-title{font-weight:600;margin-bottom:12px;color:#2d582d;display:flex;justify-content:space-between;align-items:center}
+  .summary-total{font-size:1.1rem;font-weight:700;color:#1a3a1a;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+  .summary-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .summary-item{display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;font-weight:600;color:#3e5b3e;padding:6px 10px;background:#f9fff9;border-radius:8px}
+  .summary-item span:last-child{font-weight:700;color:#248232}
+  .summary-status{display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.85rem;font-weight:600;color:#2e7d32;margin-top:10px;text-align:center}
+  .tip-card{margin:0 20px;background:#dbf0db;border-radius:14px;display:flex;align-items:center;padding:14px 16px;gap:12px;font-size:0.9rem}
+  .tip-image{width:40px}
+  nav{position:fixed;bottom:0;left:0;right:0;background:#fff;box-shadow:0 -2px 8px rgba(0,0,0,0.08);display:flex;justify-content:space-around;padding:10px 0;border-top-left-radius:14px;border-top-right-radius:14px;z-index:100}
+  nav button{background:none;border:none;font-weight:600;font-size:0.75rem;color:#668866;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+  nav button.active{color:#2f7d2f}
+  nav button svg{width:20px;height:20px;fill:currentColor}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo" onclick="window.location.href='home.html'">cukup.id</div>
+  <div class="notification" onclick="resetData()" title="Reset Data Demo">🔄</div>
+</header>
+
+<!-- BERANDA -->
+<main class="page">
+  <section class="greeting">
+    <h2>Halo, Kamu!</h2>
+    <p>Yuk, atur keuanganmu biar cukup sampai akhir bulan!</p>
+  </section>
+
+  <section class="card saldo-card">
+    <div class="title">Saldo Tersisa</div>
+    <div class="amount">
+      <span id="saldo-amount">Rp 450.000</span>
+      <span style="cursor:pointer;font-size:1.2rem" onclick="toggleSaldo()">👁️</span>
+    </div>
+    <button class="btn-topup" onclick="tambahPemasukan()">+ Tambah Saldo</button>
+    <div class="calendar-badge">Sisa 14 Hari</div>
+  </section>
+
+  <!-- TOMBOL AKSI CEPAT -->
+  <section class="quick-actions">
+    <button class="quick-action-btn" onclick="window.location.href='catat.html'">
+      <svg viewBox="0 0 24 24"><path d="M7 18h10v2H7v-2zM19 4H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/></svg>
+      Catat
+    </button>
+    <button class="quick-action-btn" onclick="window.location.href='laporan.html'">
+      <svg viewBox="0 0 24 24"><path d="M4 21h16v-2H4v2zm6-5h2v-7h-2v7zm4 0h2v-4h-2v4z"/></svg>
+      Laporan
+    </button>
+    <button class="quick-action-btn" onclick="window.location.href='budget.html'">
+      <svg viewBox="0 0 24 24"><path d="M12 7l3 6H9l3-6zm0 10a9 9 0 1 1 0-18 9 9 0 0 1 0 18z"/></svg>
+      Budget
+    </button>
+    <button class="quick-action-btn" onclick="window.location.href='target.html'">
+      <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+      Target
+    </button>
+  </section>
+
+  <!-- RINGKASAN -->
+  <section class="card">
+    <div class="summary-title">Ringkasan Bulan Ini</div>
+    <div class="summary-total">
+      <span>Total Pengeluaran:</span>
+      <span id="summary-total-val" style="color:#e53935">Rp 0</span>
+    </div>
+    <div class="summary-list">
+      <div class="summary-item">
+        <span>Kebutuhan</span>
+        <span id="sum-kebutuhan">Rp 0</span>
+      </div>
+      <div class="summary-item">
+        <span>Hiburan</span>
+        <span id="sum-hiburan">Rp 0</span>
+      </div>
+      <div class="summary-item">
+        <span>Lain-lain</span>
+        <span id="sum-lainnya">Rp 0</span>
+      </div>
+      <div class="summary-item" style="background:#eef7ee;">
+        <span>Tabungan / Target</span>
+        <span id="sum-tabungan">Rp 0</span>
+      </div>
+    </div>
+    <div class="summary-status" id="status-budget">
+      ✅ Kamu masih aman! Sisa saldo siap dipakai.
+    </div>
+  </section>
+
+  <section class="tip-card">
+    <img class="tip-image" src="https://cdn-icons-png.flaticon.com/512/633/633759.png" alt="Tip" />
+    <div><b>Tips:</b> Catat pengeluaran kecil juga ya biar lebih terkontrol!</div>
+  </section>
+</main>
+
+<!-- NAVIGASI BAWAH -->
+<nav>
+  <button id="nav-beranda" class="active" onclick="window.location.href='home.html'">
+    <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9v9a3 3 0 0 1-3 3h-3v-6H9v6H6a3 3 0 0 1-3-3v-9z"/></svg>
+    Beranda
+  </button>
+  <button onclick="window.location.href='catat.html'">
+    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+    Catat
+  </button>
+  <button onclick="window.location.href='laporan.html'">
+    <svg viewBox="0 0 24 24"><path d="M4 21h16v-2H4v2zm5-6h2v-7H9v7zm4 0h2v-4h-2v4z"/></svg>
+    Laporan
+  </button>
+  <button onclick="window.location.href='budget.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 7l3 6H9l3-6zm0 10a9 9 0 1 1 0-18 9 9 0 0 1 0 18z"/></svg>
+    Budget
+  </button>
+  <button onclick="window.location.href='target.html'">
+    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+    Target
+  </button>
+</nav>
+
+<script>
+  let state = JSON.parse(localStorage.getItem('cukup_data')) || {
+    saldo: 450000,
+    totalBudget: 1800000,
+    tabunganTerkumpul: 1500000,
+    transaksi: [
+      { nama: 'Belanja Bulanan', nominal: 1000000, kategori: 'Kebutuhan', tipe: 'keluar' },
+      { nama: 'Nonton Bioskop', nominal: 250000, kategori: 'Hiburan', tipe: 'keluar' },
+      { nama: 'Beli Kopi & Camilan', nominal: 100000, kategori: 'Lain-lain', tipe: 'keluar' }
+    ]
+  };
+
+  let hideSaldo = false;
+  const formatRp = (angka) => 'Rp ' + angka.toLocaleString('id-ID');
+
+  function updateSemuaTampilan() {
+    document.getElementById('saldo-amount').textContent = hideSaldo ? '******' : formatRp(state.saldo);
+
+    let totalKeluar = 0;
+    let totKebutuhan = 0;
+    let totHiburan = 0;
+    let totLainnya = 0;
+    let totTabungan = 0;
+
+    state.transaksi.forEach(t => {
+      if (t.tipe === 'keluar') {
+        totalKeluar += t.nominal;
+        if (t.kategori === 'Kebutuhan') totKebutuhan += t.nominal;
+        else if (t.kategori === 'Hiburan') totHiburan += t.nominal;
+        else if (t.kategori === 'Lain-lain') totLainnya += t.nominal;
+        else if (t.kategori === 'Tabungan') totTabungan += t.nominal;
+      }
+    });
+
+    document.getElementById('summary-total-val').textContent = formatRp(totalKeluar);
+    document.getElementById('sum-kebutuhan').textContent = formatRp(totKebutuhan);
+    document.getElementById('sum-hiburan').textContent = formatRp(totHiburan);
+    document.getElementById('sum-lainnya').textContent = formatRp(totLainnya);
+    document.getElementById('sum-tabungan').textContent = formatRp(totTabungan);
+
+    const statusEl = document.getElementById('status-budget');
+    if (state.saldo <= 50000) {
+      statusEl.innerHTML = '⚠️ Hati-hati! Saldo kamu menipis banget.';
+      statusEl.style.color = '#e53935';
+    } else {
+      statusEl.innerHTML = '✅ Kamu masih aman! Sisa saldo siap dipakai.';
+      statusEl.style.color = '#2e7d32';
+    }
+  }
+
+  function toggleSaldo() {
+    hideSaldo = !hideSaldo;
+    updateSemuaTampilan();
+  }
+
+  function tambahPemasukan() {
+    const input = prompt('Masukkan nominal pemasukan / tambah saldo (Rp):');
+    const nominal = parseInt(input);
+    if (!nominal || nominal <= 0) return;
+
+    state.saldo += nominal;
+    state.transaksi.unshift({ nama: 'Pemasukan Saldo', nominal, kategori: 'Pemasukan', tipe: 'masuk' });
+    localStorage.setItem('cukup_data', JSON.stringify(state));
+    updateSemuaTampilan();
+    alert('Saldo bertambah ' + formatRp(nominal) + '!');
+  }
+
+  function resetData() {
+    if (confirm('Reset semua data kembali ke awal?')) {
+      localStorage.removeItem('cukup_data');
+      location.reload();
+    }
+  }
+
+  updateSemuaTampilan();
+</script>
+
+</body>
+</html>
